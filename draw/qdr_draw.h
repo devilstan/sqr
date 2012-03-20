@@ -10,6 +10,7 @@
 #include "qdr_eye.h"
 #include "qdr_text.h"
 #include "qdr_paste.h"
+#include "qdr_import.h"
 
 void qdr_draw(Qdr *qdr);
 

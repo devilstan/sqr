@@ -6,49 +6,53 @@
 void paste_paint(Qdr *qdr, cairo_t *cr)
 {
 	int x, y, sw, sh;
+	struct QDRBindImage b;
 	
 	if(!qdr->paste.image)
 		return;
 	
 	cairo_save(cr);
 	
-	cairo_surface_t *surface = cairo_image_surface_create_from_png(qdr->paste.image);
+	//cairo_surface_t *surface = cairo_image_surface_create_from_png(qdr->paste.image);
+	cairo_surface_t *surface = image_surface_create(&b, qdr->paste.image);
+	if(!surface)
+		return;
 	cairo_pattern_t *pattern = cairo_pattern_create_for_surface(surface);
 	
 	int w = cairo_image_surface_get_width(surface);
 	int h = cairo_image_surface_get_height(surface);
 	
 	if(qdr->paste.type == QDR_PASTETYPE_LAYOUT){
-		//Œë‚è’ù³ƒŒƒxƒ‹‚É‰ž‚¶‚½‹–—eƒTƒCƒY(0.8=”÷–­‚É“Ç‚ß‚È‚¢‚±‚Æ‚ª‚ ‚é‚Ì‚Å•â³)
+		//èª¤ã‚Šè¨‚æ­£ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸè¨±å®¹ã‚µã‚¤ã‚º(0.8=å¾®å¦™ã«èª­ã‚ãªã„ã“ã¨ãŒã‚ã‚‹ã®ã§è£œæ­£)
 		int lm = sqrt(qdr->ssize*qdr->msize * qdr->ssize*qdr->msize * qdr->paste.level/100) * 0.8;
-		//ƒGƒŠƒA
+		//ã‚¨ãƒªã‚¢
 		int s = (qdr->ssize * qdr->msize) / 3;
 		
-		//ƒ}[ƒN‚Ì”ÍˆÍ‚ð—Dæ‚·‚é
+		//ãƒžãƒ¼ã‚¯ã®ç¯„å›²ã‚’å„ªå…ˆã™ã‚‹
 		if(lm > s)
 			lm = s;
 		
-		//ƒ}[ƒWƒ“
+		//ãƒžãƒ¼ã‚¸ãƒ³
 		int m = qdr->margin * qdr->msize;
 		
 		switch(qdr->paste.layout){
-			case QDR_LAYOUT_NORTH:	//ã•”
+			case QDR_LAYOUT_NORTH:	//ä¸Šéƒ¨
 				x = s + m;
 				y = m;
 				break;
-			case QDR_LAYOUT_SOUTH:	//‰º•”
+			case QDR_LAYOUT_SOUTH:	//ä¸‹éƒ¨
 				x = s + m;
 				y = s*2 + m;
 				break;
-			case QDR_LAYOUT_EAST:	//‰E
+			case QDR_LAYOUT_EAST:	//å³
 				x = s*2 + m;
 				y = s + m;
 				break;
-			case QDR_LAYOUT_WEST:	//¶
+			case QDR_LAYOUT_WEST:	//å·¦
 				x = m;
 				y = s + m;
 				break;
-			case QDR_LAYOUT_CENTER:	//’†‰›
+			case QDR_LAYOUT_CENTER:	//ä¸­å¤®
 			default:
 				x = s + m;
 				y = s + m;
@@ -67,7 +71,7 @@ void paste_paint(Qdr *qdr, cairo_t *cr)
 			cairo_pattern_set_matrix(pattern, &matrix);
 		}
 		
-		//‹É—Í’†S‚Ö
+		//æ¥µåŠ›ä¸­å¿ƒã¸
 		x += (s - w)/2;
 		y += (s - h)/2;
 		sw = sh = s;
@@ -85,6 +89,8 @@ void paste_paint(Qdr *qdr, cairo_t *cr)
 	
 	cairo_pattern_destroy(pattern);
 	cairo_surface_destroy(surface);
+	if(b.data)
+		free(b.data);
 	
 	cairo_restore(cr);
 }
@@ -109,12 +115,12 @@ int qdr_paste_layout(Qdr *qdr, const char *file, QDR_LAYOUT layout, QDR_LEVEL le
 		return 0;
 	}
 	
-	//Œë‚è’ù³ƒŒƒxƒ‹‚É‰ž‚¶‚½‹–—eƒTƒCƒY(5px‚æ‚è¬‚³‚¢‚Ì‚Í‚Ç‚¤‚¹‚Ý‚¦‚È‚¢‚Ì‚ÅœŠO)
+	//èª¤ã‚Šè¨‚æ­£ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸè¨±å®¹ã‚µã‚¤ã‚º(5pxã‚ˆã‚Šå°ã•ã„ã®ã¯ã©ã†ã›ã¿ãˆãªã„ã®ã§é™¤å¤–)
 	lm = sqrt(qdr->ssize*qdr->msize * qdr->ssize*qdr->msize * level/100) * 0.8;
 	if(lm < 5)
 		return 1;
 	
-	//ƒGƒŠƒA
+	//ã‚¨ãƒªã‚¢
 	//s = (qdr->ssize * qdr->msize) / 3;
 	//if(lm > s){
 	//	fprintf(stderr, "[warn] %s(%d) level invalid.\n", __func__, __LINE__);

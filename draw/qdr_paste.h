@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include "qdr_private.h"
+#include "qdr_import.h"
 
 void paste_paint(Qdr *qdr, cairo_t *cr);
 

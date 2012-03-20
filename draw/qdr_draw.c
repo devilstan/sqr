@@ -56,25 +56,25 @@ int qdr_init(Qdr *qdr, unsigned int symbolsize, unsigned char data[QDR_MAXMSIZE]
 	qdr->rsize  = qdr_size(qdr->msize, qdr->ssize, qdr->margin);
 	memcpy(qdr->data, data, QDR_MAXMSIZE*QDR_MAXMSIZE);
 	
-	//ƒVƒ“ƒ{ƒ‹Œ`ó
+	//ã‚·ãƒ³ãƒœãƒ«å½¢çŠ¶
 	qdr->marktype = QDR_MARKTYPE_RECTANGLE;
 	qdr->radius = QDR_DEFAULT_RADIUS;
 	
-	//”wŒi
+	//èƒŒæ™¯
 	qdr->background.type = QDR_BACKGROUND_SIMPLE;
 	qdr->background.r = 1.0;
 	qdr->background.g = 1.0;
 	qdr->background.b = 1.0;
 	qdr->background.a = 1.0;
 	
-	//ƒVƒ“ƒ{ƒ‹“h‚èî•ñ
+	//ã‚·ãƒ³ãƒœãƒ«å¡—ã‚Šæƒ…å ±
 	qdr->markpaint.type = QDR_MARKPAINT_SIMPLE;
 	qdr->markpaint.r = 0.0;
 	qdr->markpaint.g = 0.0;
 	qdr->markpaint.b = 0.0;
 	qdr->markpaint.a = 1.0;
 	
-	//eye_markƒZƒbƒgƒAƒbƒv
+	//eye_markã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
 	eye_mark_init(qdr);
 	
 	return 0;
@@ -241,17 +241,19 @@ static void background(Qdr *qdr, cairo_t *cr)
 		cairo_surface_t *image;
 		cairo_matrix_t   matrix;
 		int w, h, s;
+		struct QDRBindImage b;
 		
-		image = cairo_image_surface_create_from_png(qdr->background.image);
+		//image = cairo_image_surface_create_from_png(qdr->background.image);
+		image = image_surface_create(&b, qdr->background.image);
 		if(!image){
-			fprintf(stderr, "%s(%d) cairo_image_surface_create_from_png faild.\n", __func__, __LINE__);
+			fprintf(stderr, "%s(%d) image_surface_create faild.\n", __func__, __LINE__);
 			return;
 		}
 		
 		w = cairo_image_surface_get_width(image);
 		h = cairo_image_surface_get_height(image);
 		
-		//Œ„ŠÔ‚ª‚Å‚«‚È‚¢‚æ‚¤‚ÉƒXƒP[ƒŠƒ“ƒO‚·‚é
+		//éš™é–“ãŒã§ããªã„ã‚ˆã†ã«ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°ã™ã‚‹
 		cairo_save(cr);
 			s = w<h ? w : h;
 			cairo_matrix_init_scale(&matrix, (double)qdr->rsize/s, (double)qdr->rsize/s);
@@ -261,6 +263,9 @@ static void background(Qdr *qdr, cairo_t *cr)
 			cairo_paint_with_alpha(cr, qdr->background.a);
 			
 			cairo_surface_destroy(image);
+			if(b.data)
+				free(b.data);
+		
 		cairo_restore(cr);
 	}else
 	if(qdr->background.type == QDR_BACKGROUND_GRAD){
@@ -278,21 +283,22 @@ static void background(Qdr *qdr, cairo_t *cr)
 //=================================================================================
 // mark_paint_set_source
 //=================================================================================
-static void mark_paint_set_source(Qdr *qdr, cairo_t *cr, cairo_pattern_t *pattern, cairo_surface_t *image)
+static void mark_paint_set_source(Qdr *qdr, cairo_t *cr, cairo_pattern_t *pattern, cairo_surface_t *image, struct QDRBindImage *b)
 {
-	//ƒOƒ‰ƒf[ƒVƒ‡ƒ“
+	//ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³
 	if(qdr->markpaint.type == QDR_MARKPAINT_GRAD){
 		pattern = grad_pattern(qdr, &qdr->markpaint.grad, qdr->margin*qdr->msize, qdr->margin*qdr->msize, qdr->ssize*qdr->msize/2);
 		cairo_set_source(cr, pattern);
 		return;
 	}
 	
-	//‰æ‘œ
+	//ç”»åƒ
 	if(qdr->markpaint.type == QDR_MARKPAINT_IMAGE){
 		cairo_matrix_t matrix;
 		int w, h, c, s;
 		
-		image = cairo_image_surface_create_from_png(qdr->markpaint.image);
+		//image = cairo_image_surface_create_from_png(qdr->markpaint.image);
+		image = image_surface_create(b, qdr->markpaint.image);
 		w = cairo_image_surface_get_width(image);
 		h = cairo_image_surface_get_height(image);
 		c = qdr->ssize * qdr->msize;
@@ -330,16 +336,18 @@ void qdr_draw(Qdr *qdr)
 	cairo_pattern_t *group_pattern=NULL;
 	int i, j, is_shadow;
 	void (*mark)(Qdr *qdr, cairo_t *cr, int x, int y);
+	struct QDRBindImage b;
 	
 	cr = cairo_create(qdr->surface);
 
-	//”wŒi‚ÌƒZƒbƒg
+	//èƒŒæ™¯ã®ã‚»ãƒƒãƒˆ
 	background(qdr, cr);
 	
-	//ƒOƒ[ƒoƒ‹ƒ}[ƒNƒyƒCƒ“ƒgİ’è
-	mark_paint_set_source(qdr, cr, pattern, image);
+	//ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒãƒ¼ã‚¯ãƒšã‚¤ãƒ³ãƒˆè¨­å®š
+	memset(&b, 0, sizeof(struct QDRBindImage));
+	mark_paint_set_source(qdr, cr, pattern, image, &b);
 	
-	//ƒ}[ƒNŒ`ó‚É‰‚¶‚Äƒƒ\ƒbƒh‘I‘ğ
+	//ãƒãƒ¼ã‚¯å½¢çŠ¶ã«å¿œã˜ã¦ãƒ¡ã‚½ãƒƒãƒ‰é¸æŠ
 	switch(qdr->marktype){
 		case QDR_MARKTYPE_ARC:
 			mark = mark_arc;
@@ -355,10 +363,10 @@ void qdr_draw(Qdr *qdr)
 			mark = mark_rectangle;
 	}
 	
-	//‰e
+	//å½±
 	is_shadow = (qdr->shadow.offsetx!=0 || qdr->shadow.offsety!=0);
 	
-	//ƒ}[ƒN•`‰æ
+	//ãƒãƒ¼ã‚¯æç”»
 	for(i=0; i<qdr->ssize; i++){
 		for(j=0; j<qdr->ssize; j++){
 			if(!qdr->data[j][i])
@@ -389,10 +397,7 @@ void qdr_draw(Qdr *qdr)
 		}
 	}
 	
-	//‰æ‘œ“\‚è•t‚¯
 	paste_paint(qdr, cr);
-	
-	//ƒeƒLƒXƒg(‰æ‘œ‚æ‚è‘O‚É‚·‚×‚«‚©H)
 	text_paint(qdr, cr);
 	
 	//for pdf
@@ -404,6 +409,8 @@ void qdr_draw(Qdr *qdr)
 		cairo_pattern_destroy(pattern);
 	if(image)
 		cairo_surface_destroy(image);
+	if(b.data)
+		free(b.data);
 	
 	cairo_destroy(cr);
 }
@@ -419,11 +426,11 @@ int qdr_save(Qdr *qdr, QDR_FORMAT format, const char *file)
 		return 1;
 	
 	if(qdr->surface){
-		//surface‚ª‘¶İ‚µ‚Ä‚¢‚ÄAtype=Image‚Å‚ ‚ê‚Îfilter“K—p‚³‚ê‚½‰Â”\«‚ª‚ ‚é‚Ì‚Ådraw‚µ‚È‚¢
+		//surfaceãŒå­˜åœ¨ã—ã¦ã„ã¦ã€type=Imageã§ã‚ã‚Œã°filteré©ç”¨ã•ã‚ŒãŸå¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§drawã—ãªã„
 		if(cairo_surface_get_type(qdr->surface)==CAIRO_SURFACE_TYPE_IMAGE && format==QDR_FORMAT_PNG)
 			goto PNG;
 		
-		//surface.type‚Æformat‚ªˆá‚Á‚Ä‚¢‚éê‡‚ÍAfilter‚©‚¯‚½‚Ì‚Éˆá‚¤format‚Åˆ—‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚é?
+		//surface.typeã¨formatãŒé•ã£ã¦ã„ã‚‹å ´åˆã¯ã€filterã‹ã‘ãŸã®ã«é•ã†formatã§å‡¦ç†ã—ã‚ˆã†ã¨ã—ã¦ã„ã‚‹?
 		fprintf(stderr, "[warn] %s(%d): filter destroy!\n", __func__, __LINE__);
 		cairo_surface_destroy(qdr->surface);
 	}
@@ -485,17 +492,17 @@ int qdr_hole(Qdr *qdr, QDR_LEVEL level)
 	if(level<=0 || level>30)
 		return 1;
 	
-	//ˆê•Ó‚ÌƒTƒCƒY
+	//ä¸€è¾ºã®ã‚µã‚¤ã‚º
 	lm = sqrt(qdr->ssize * qdr->ssize * level/100);
-	lm -= 4;	//‚Ú‚Á‚±‚è‹ó‚¢‚Ä”F¯‚Å‚«‚È‚¢‰Â”\«‚ª‚ ‚é‚Ì‚Å
+	lm -= 4;	//ã¼ã£ã“ã‚Šç©ºã„ã¦èªè­˜ã§ããªã„å¯èƒ½æ€§ãŒã‚ã‚‹ã®ã§
 	
-	//ƒz[ƒ‹‚ªƒZƒ“ƒ^[‚ÉƒLƒŒƒC‚É”z’u‚³‚ê‚é‚æ‚¤‚É’²®
+	//ãƒ›ãƒ¼ãƒ«ãŒã‚»ãƒ³ã‚¿ãƒ¼ã«ã‚­ãƒ¬ã‚¤ã«é…ç½®ã•ã‚Œã‚‹ã‚ˆã†ã«èª¿æ•´
 	if((qdr->ssize - lm) % 2)
 		lm--;
 	
 	s = (qdr->ssize - lm)/ 2;
 	
-	//ƒ^[ƒQƒbƒg‚ÌƒVƒ“ƒ{ƒ‹î•ñ‚ğƒNƒŠƒA‚·‚é
+	//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ã‚·ãƒ³ãƒœãƒ«æƒ…å ±ã‚’ã‚¯ãƒªã‚¢ã™ã‚‹
 	for(i=s; i<s+lm; i++)
 		for(j=s; j<s+lm; j++)
 			qdr->data[j][i] = 0;

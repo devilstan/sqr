@@ -6,7 +6,7 @@ CFLAGS=-O3 -Wall -c
 LFLAGS=
 
 PIKL_CFLAGS = -I. -Ipikl
-PIKL_LFLAGS = -ljpeg -lpng
+PIKL_LFLAGS = -ljpeg -lpng -lgif
 
 CAIRO_CFLAGS = -I/usr/include/cairo
 CAIRO_LFLAGS = -lcairo 
@@ -29,6 +29,7 @@ QR_DRAW = \
 	qdr_eye.o \
 	qdr_text.o \
 	qdr_paste.o \
+	qdr_import.o \
 	qdr_test.o
 
 PIKL = \
@@ -105,6 +106,8 @@ qdr_text.o:
 	$(CC) $(CFLAGS) draw/qdr_text.c $(DEBUG)
 qdr_paste.o:
 	$(CC) $(CFLAGS) draw/qdr_paste.c $(DEBUG)
+qdr_import.o:
+	$(CC) $(CFLAGS) draw/qdr_import.c $(DEBUG)
 qdr_test.o:
 	$(CC) $(CFLAGS) draw/qdr_test.c $(DEBUG)
 

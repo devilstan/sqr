@@ -91,7 +91,7 @@ int qdr_group(Qdr *qdr)
 	g = &qdr->group;
 	memset(g, 0, sizeof(struct QDRGroup));
 	
-	//ƒOƒ‹[ƒv0‚Íreserve‚È‚Ì‚ÅƒOƒ‹[ƒv”‚Í‰Šú’l1
+	//ã‚°ãƒ«ãƒ¼ãƒ—0ã¯reserveãªã®ã§ã‚°ãƒ«ãƒ¼ãƒ—æ•°ã¯åˆæœŸå€¤1
 	g->count = 1;
 	
 	for(i=0; i<qdr->ssize; i++){
@@ -108,14 +108,14 @@ int qdr_group(Qdr *qdr)
 				if(i<=0){
 					g->data[j][i] = qdr->data[j-1][i] ? g->data[j-1][i] : g->count++;
 				}else{
-					int a = qdr->data[j][i-1] ? 1 : 0;	//ãƒZƒ‹
-					int b = qdr->data[j-1][i] ? 1 : 0;	//¶ƒZƒ‹
+					int a = qdr->data[j][i-1] ? 1 : 0;	//ä¸Šã‚»ãƒ«
+					int b = qdr->data[j-1][i] ? 1 : 0;	//å·¦ã‚»ãƒ«
 					
 					if(a){
-						//ã•ûŒü‚ª—LŒø‚È‚Ì‚ÅƒOƒ‹[ƒsƒ“ƒO
+						//ä¸Šæ–¹å‘ãŒæœ‰åŠ¹ãªã®ã§ã‚°ãƒ«ãƒ¼ãƒ”ãƒ³ã‚°
 						g->data[j][i] = g->data[j][i-1];
 						
-						//’A‚µA‰¡•ûŒü‚à—LŒø‚ÈŽž‚ÍƒOƒ‹[ƒv“‡
+						//ä½†ã—ã€æ¨ªæ–¹å‘ã‚‚æœ‰åŠ¹ãªæ™‚ã¯ã‚°ãƒ«ãƒ¼ãƒ—çµ±åˆ
 						if(b){
 							int x, y;
 							int n = g->data[j-1][i];
@@ -130,7 +130,7 @@ int qdr_group(Qdr *qdr)
 							}
 						}
 					}else{
-						//ãƒZƒ‹‚ª‚¢‚È‚¢‚Ì‚ÅA¶ƒZƒ‹‚Ì‘¶Ýó‘Ô‚ÅƒOƒ‹[ƒv‚ðŒˆ’è‚·‚é
+						//ä¸Šã‚»ãƒ«ãŒã„ãªã„ã®ã§ã€å·¦ã‚»ãƒ«ã®å­˜åœ¨çŠ¶æ…‹ã§ã‚°ãƒ«ãƒ¼ãƒ—ã‚’æ±ºå®šã™ã‚‹
 						g->data[j][i] = b ? g->data[j-1][i] : g->count++;
 					}
 				}
@@ -161,7 +161,12 @@ void mark_paint_group(Qdr *qdr, cairo_t *cr, cairo_pattern_t *pattern, int _x, i
 		int y = (_y + qdr->margin) * qdr->msize;
 
 		if(!pattern){
-			cairo_surface_t *surface = cairo_image_surface_create_from_png(qdr->group.image);
+			struct QDRBindImage b;
+			//cairo_surface_t *surface = cairo_image_surface_create_from_png(qdr->group.image);
+			cairo_surface_t *surface = image_surface_create(&b, qdr->group.image);
+			if(!surface)
+				return;
+			
 			int w = cairo_image_surface_get_width(surface);
 			int h = cairo_image_surface_get_height(surface);
 			
@@ -177,6 +182,8 @@ void mark_paint_group(Qdr *qdr, cairo_t *cr, cairo_pattern_t *pattern, int _x, i
 				cairo_pattern_set_matrix(pattern, &matrix);
 			}
 			cairo_surface_destroy(surface);
+			if(b.data)
+				free(b.data);
 		}
 		
 		//umm...

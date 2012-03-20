@@ -190,6 +190,12 @@ static void group(CQR_Encode *qr)
 	qdr_group_image(&qdr, "images/heart.png", 0);
 	_save(&qdr, "group2.png");
 	
+
+	//1セルのグループに画像を設定(下地の色は消す)
+	qdr_group_image(&qdr, "images/gif-normal-transparent.gif", 0);
+	_save(&qdr, "group3.png");
+	
+	
 	qdr_close(&qdr);
 }
 
@@ -291,9 +297,35 @@ static void paste(CQR_Encode *qr)
 	qdr_group(&qdr);
 	qdr_group_palette_rand(&qdr, 0, 200, 0xff);
 	
+	//png
 	qdr_paste(&qdr, "images/tama.png", 100, 100);
+	_save(&qdr, "paste-png.png");
+	
+	
+	//jpeg-gray
+	qdr_paste(&qdr, "images/jpg-gray.jpg", 100, 100);
+	_save(&qdr, "paste-jpeg-gray.png");
+	
+	//jpeg-rgb
+	qdr_paste(&qdr, "images/jpg-rgb.jpg", 100, 100);
+	_save(&qdr, "paste-jpg-rgb.png");
+	
+	//jpeg-cmyk
+	qdr_paste(&qdr, "images/jpg-cmyk.jpg", 100, 100);
+	_save(&qdr, "paste-jpg-cmyk.png");
+	
+	
+	//gif-anime
+	qdr_paste(&qdr, "images/gif-anime.gif", 100, 100);
+	_save(&qdr, "paste-gif-anime.png");
 
-	_save(&qdr, "paste.png");
+	//gif-interlace-transparent
+	qdr_paste(&qdr, "images/gif-interlace-transparent.gif", 100, 100);
+	_save(&qdr, "paste-gif-interlace-transparent.png");
+	
+	//gif-normal-transparent
+	qdr_paste(&qdr, "images/gif-normal-transparent.gif", 100, 100);
+	_save(&qdr, "paste-gif-normal-transparent.png");
 	
 	qdr_close(&qdr);
 }
@@ -651,7 +683,7 @@ int main(int argc, char **argv)
 	if(!qr.EncodeData(nLevel, nVersion, bAutoExtent, nMaskingNo, data, strlen(data)))
 		return 1;
 
-	printf("**%d\n", qr.m_nSymbleSize);
+	printf("SymbleSize = %d\n", qr.m_nSymbleSize);
 	for(int i=0; i<qr.m_nSymbleSize; i++){
 		for(int j=0; j<qr.m_nSymbleSize; j++){
 			printf("%d ", qr.m_byModuleData[j][i]);
@@ -696,29 +728,30 @@ int main(int argc, char **argv)
 	
 	output_svg(&qr);
 	output_pdf(&qr);
-//	
-///////////////////////////////////////////////////////////////////
-//{
-//	CQR_Encode qr;
-//	char *data = (char *)"qdr";
-//	qr.EncodeData(1, 0, true, -1, data, strlen(data));
-//
-//	Qdr qdr;
-//	qdr_init(&qdr, qr.m_nSymbleSize, qr.m_byModuleData);
-//	qdr_group(&qdr);
-//	qdr_group_palette_rand(&qdr, 0, 200, 0xff);
-//
-//	//多重フィルター
-//	qdr_filter_invert(&qdr);
-//	qdr_filter_hexagon(&qdr, 3);
-//	
-//	//qdr_save_png(&qdr, "out/test.png");
-//	
-//	//その後にsvg保存(surface違いのwarnが出るはず)
-//	qdr_save_svg(&qdr, "out/test.svg");
-//	
-//	qdr_close(&qdr);
-//}
+
+
+/////////////////////////////////////////////////////////////////
+{
+	CQR_Encode qr;
+	char *data = (char *)"qdr";
+	qr.EncodeData(1, 0, true, -1, data, strlen(data));
+
+	Qdr qdr;
+	qdr_init(&qdr, qr.m_nSymbleSize, qr.m_byModuleData);
+	qdr_group(&qdr);
+	qdr_group_palette_rand(&qdr, 0, 200, 0xff);
+
+	//多重フィルター
+	qdr_filter_invert(&qdr);
+	qdr_filter_hexagon(&qdr, 3);
+	//qdr_save_png(&qdr, "out/test.png");
+	
+	//フィルター後にsvg保存(surface違いのwarnが出る)
+	qdr_save_svg(&qdr, "out/test.svg");
+	
+	qdr_close(&qdr);
+}
+
 /////////////////////////////////////////////////////////////////
 {
 	//test
@@ -737,46 +770,8 @@ int main(int argc, char **argv)
 	
 	qdr_close(&qdr);
 }
-
 /////////////////////////////////////////////////////////////////
-//{
-//	CQR_Encode qr;
-//	char *data = (char *)"qdr";
-//	
-//	qr.EncodeData(1, 0, true, -1, data, strlen(data));
-//	
-//	
-//	Qdr qdr;
-//
-//	qdr_init(&qdr, qr.m_nSymbleSize, qr.m_byModuleData);
-//	qdr_set_msize(&qdr, 2);
-//	//qdr_group(&qdr);
-//	//qdr_group_palette_rand(&qdr, 0, 200, 0xff);
-//	qdr_draw(&qdr);
-//	qdr_save(&qdr, "logo.png");
-//	qdr_close(&qdr);
-//	
-//	
-//	
-//	
-//	//qdr_set_mark(qdr, QDR_MARKTYPE_BLOCKARC, 0.5);
-//	//qdr_set_mark_shadow(qdr, 3, 3, 200, 200, 230, 0xff);
-//	//
-//	//qdr_set_mark_image(qdr, "images/back1.png", 0xff);
-//	//
-//	//qdr_draw(qdr);
-//	//save(qdr, "test.png");
-//
-//	//qdr_set_mark(qdr, QDR_MARKTYPE_BLOCKARC, 0.5);
-//	//qdr_set_mark_shadow(qdr, 3, 3, 200, 200, 230, 0xff);
-//	//
-//	//qdr_group(qdr);
-//	//qdr_group_palette_rand(qdr, 0, 200, 0xff);
-//	//qdr_group_image(qdr, "images/_animal_054.png", 0);
-//	//
-//	//qdr_draw(qdr);
-//	//save(qdr, "test.png");
-//}
+
 
 #ifdef DEBUG
 	dbg_print_alloc_count(stdout);

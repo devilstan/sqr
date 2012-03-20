@@ -29,13 +29,13 @@ void mark_arc(Qdr *qdr, cairo_t *cr, int _x, int _y)
 {
 	int x, y;
 	double px0, py0, px1, py1;
-	double radius;	//‰~ŒÊ‚Ì”¼Œa
+	double radius;	//å††å¼§ã®åŠå¾„
 	
-	//¶ã‹N“_
+	//å·¦ä¸Šèµ·ç‚¹
 	x = (qdr->margin + _x) * qdr->msize;
 	y = (qdr->margin + _y) * qdr->msize;
 	
-	//‰~‚Ì’†SÀ•W
+	//å††ã®ä¸­å¿ƒåº§æ¨™
 	radius = qdr->msize * qdr->radius;
 	px0 = x + radius;
 	py0 = y + radius;
@@ -151,7 +151,7 @@ void mark_blockarc(Qdr *qdr, cairo_t *cr, int j, int i)
 		blockarc_d
 	};
 	
-	// A(¶ã)
+	// A(å·¦ä¸Š)
 	// +---+---+
 	// | a | b |
 	// +---+---+
@@ -163,7 +163,7 @@ void mark_blockarc(Qdr *qdr, cairo_t *cr, int j, int i)
 	edge[0] = (b==0 && c==0)         ? EDGE_ARC : 
 			  (a==1 && b==1 && c==0) ? EDGE_NARC : EDGE_RECT;
 	
-	// B(‰Eã)
+	// B(å³ä¸Š)
 	// +---+---+
 	// | a | b |
 	// +---+---+
@@ -175,7 +175,7 @@ void mark_blockarc(Qdr *qdr, cairo_t *cr, int j, int i)
 	edge[1] = (a==0 && c==0)         ? EDGE_ARC :
 			  (a==1 && b==1 && c==0) ? EDGE_NARC : EDGE_RECT;
 	
-	// C(‰E‰º)
+	// C(å³ä¸‹)
 	// +---+---+
 	// | * | a |
 	// +---+---+
@@ -187,7 +187,7 @@ void mark_blockarc(Qdr *qdr, cairo_t *cr, int j, int i)
 	edge[2] = (a==0 && b==0)         ? EDGE_ARC :
 			  (a==0 && b==1 && c==1) ? EDGE_NARC : EDGE_RECT;
 
-	// D(¶‰º)
+	// D(å·¦ä¸‹)
 	// +---+---+
 	// | a | * |
 	// +---+---+
@@ -204,14 +204,14 @@ void mark_blockarc(Qdr *qdr, cairo_t *cr, int j, int i)
 	double half = qdr->msize / 2.0;
 	double lead = half - radius;
 
-	//ƒZƒ‹‚Ì¶ã
+	//ã‚»ãƒ«ã®å·¦ä¸Š
 	x = (qdr->margin + j) * qdr->msize;
 	y = (qdr->margin + i) * qdr->msize;
 	
-	//ƒpƒX‚Ì‹N“_
+	//ãƒ‘ã‚¹ã®èµ·ç‚¹
 	cairo_move_to(cr, x, y+half);
 	
-	//Še4“_‚ÌƒpƒX‚ð\’z(¶ã->‰Eã->‰E‰º->¶‰º)
+	//å„4ç‚¹ã®ãƒ‘ã‚¹ã‚’æ§‹ç¯‰(å·¦ä¸Š->å³ä¸Š->å³ä¸‹->å·¦ä¸‹)
 	for(e=0; e<4; e++)
 		blockarc[e](qdr, cr, edge[e], x, y, half, lead, radius);
 }
@@ -327,8 +327,8 @@ void mark_metaball(Qdr *qdr, cairo_t *cr, int j, int i)
 		MB_NON = 0,
 		MB_TB,			//top or bottom
 		MB_LR,			//left or right
-		MB_BOTH,		//—¼•û
-		MB_FULL			//ŽüˆÍ‘S‚Ä(RECT)
+		MB_BOTH,		//ä¸¡æ–¹
+		MB_FULL			//å‘¨å›²å…¨ã¦(RECT)
 	};
 	void (*metaball[])(Qdr *qdr, cairo_t *cr, int edge, int x, int y, double radius) = {
 		metaball_a,
@@ -337,7 +337,7 @@ void mark_metaball(Qdr *qdr, cairo_t *cr, int j, int i)
 		metaball_d
 	};
 	
-	// A(¶ã)
+	// A(å·¦ä¸Š)
 	// +---+---+
 	// | a | b |
 	// +---+---+
@@ -351,7 +351,7 @@ void mark_metaball(Qdr *qdr, cairo_t *cr, int j, int i)
 			  (b==0 && c==1) ? MB_LR   :
 			  (a==1 && b==1 && c==1) ? MB_FULL : MB_BOTH;
 			  
-	// B(‰Eã)
+	// B(å³ä¸Š)
 	// +---+---+
 	// | a | b |
 	// +---+---+
@@ -365,7 +365,7 @@ void mark_metaball(Qdr *qdr, cairo_t *cr, int j, int i)
 			  (a==0 && c==1) ? MB_LR   :
 			  (a==1 && b==1 && c==1) ? MB_FULL : MB_BOTH;
 
-	// C(‰E‰º)
+	// C(å³ä¸‹)
 	// +---+---+
 	// | * | a |
 	// +---+---+
@@ -379,7 +379,7 @@ void mark_metaball(Qdr *qdr, cairo_t *cr, int j, int i)
 			  (a==0 && b==1) ? MB_TB  :
 			  (a==1 && b==1 && c==1) ? MB_FULL : MB_BOTH;
 
-	// D(¶‰º)
+	// D(å·¦ä¸‹)
 	// +---+---+
 	// | a | * |
 	// +---+---+
@@ -395,14 +395,14 @@ void mark_metaball(Qdr *qdr, cairo_t *cr, int j, int i)
 	
 	double radius = qdr->msize / 2.0;
 
-	//ƒZƒ‹‚Ì¶ã
+	//ã‚»ãƒ«ã®å·¦ä¸Š
 	x = (qdr->margin + j) * qdr->msize;
 	y = (qdr->margin + i) * qdr->msize;
 	
-	//ƒpƒX‚Ì‹N“_
+	//ãƒ‘ã‚¹ã®èµ·ç‚¹
 	cairo_move_to(cr, x, y+radius);
 	
-	//Še4“_‚ÌƒpƒX‚ð\’z(¶ã->‰Eã->‰E‰º->¶‰º)
+	//å„4ç‚¹ã®ãƒ‘ã‚¹ã‚’æ§‹ç¯‰(å·¦ä¸Š->å³ä¸Š->å³ä¸‹->å·¦ä¸‹)
 	for(e=0; e<4; e++)
 		metaball[e](qdr, cr, edge[e], x, y, radius);
 }

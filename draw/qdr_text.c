@@ -18,7 +18,7 @@ void text_paint(Qdr *qdr, cairo_t *cr)
 	
 	cairo_text_extents(cr, qdr->text.utf8, &extents);
 	
-	//ƒIƒyƒŒ[ƒ^‚Í—vŒŸ“¢(1.10ˆÈ‰º‚Ìê‡‚Í‘S‚Ä‚ÌƒIƒyƒŒ[ƒ^‚ª–¢‘Î‰ž)
+	//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã¯è¦æ¤œè¨Ž(1.10ä»¥ä¸‹ã®å ´åˆã¯å…¨ã¦ã®ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãŒæœªå¯¾å¿œ)
 	//  http://cairographics.org/operators/
 	#if CAIRO_VERSION >= 11000
 		cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
@@ -41,7 +41,7 @@ int qdr_text(Qdr *qdr, const char *font, const char *utf8, unsigned int height, 
 {
 	if(!qdr)
 		return 1;
-	if(height > (unsigned)qdr->msize*3 || height<=0)	//ƒtƒHƒ“ƒg‚ªƒfƒJƒXƒMƒ‹!
+	if(height > (unsigned)qdr->msize*3 || height<=0)	//ãƒ•ã‚©ãƒ³ãƒˆãŒãƒ‡ã‚«ã‚¹ã‚®ãƒ«!
 		return 1;
 	
 	qdr->text.font = font ? font : "serif";

@@ -57,7 +57,7 @@ typedef enum {
 typedef enum {
 	QDR_MARKPAINT_SIMPLE,		//単色(default)
 	QDR_MARKPAINT_IMAGE,		//画像
-	QDR_MARKPAINT_PALETTE,		//パレット(グループ化した時に使える)
+	QDR_MARKPAINT_PALETTE,		//パレット(グループ化した時のみ有効)
 	QDR_MARKPAINT_GRAD			//グラデーション
 } QDR_MARKPAINT_TYPE;
 
@@ -95,7 +95,7 @@ typedef enum {
 	QDR_PASTETYPE_POSITION
 } QDR_PASTETYPE;
 
-// format
+// save-format
 typedef enum {
 	QDR_FORMAT_PNG,
 	QDR_FORMAT_SVG,
@@ -115,12 +115,11 @@ struct QDRGroupAttr {
 
 struct QDRGroup {
 	unsigned char data[QDR_MAXMSIZE][QDR_MAXMSIZE];
-	int count;						//グループ数(実際にグループが成り立っているかはattr.count>0であるかで判定)
+	int count;						//グループ数(実際にメンバーがいるかはattr.count>0で判定)
 	struct QDRGroupAttr attr[256];	//取り急ぎ256個
 	
 	//1セル用画像設定
 	const char *image;
-	//cairo_pattern_t *pattern;
 	int is_mark;
 };
 
@@ -216,17 +215,32 @@ typedef struct _Qdr {
 	QDRSurface surface;
 } Qdr;
 
+//=============================================================================
+// input/output format
+//=============================================================================
+/*
+ <input>
+   PNG
+     use cairo
+   GIF
+     animation(但し1枚目のみを使用)
+     interlace
+     transparent
+   JPG
+     gray
+     rgb
+     cmyk
+
+ <output(use cairo)>
+   PNG
+   PDF
+   SVG
+*/
+
 //=================================================================================
 // methods
 //=================================================================================
-
-// 描画情報の初期化
-//	モジュールサイズ
-//		1つのセルの一辺のピクセル数(この指定で仕上がりサイズが決まる)
-//		デフォルトはQDR_DEFAULT_MSIZE
-//	マージンサイズ
-//		余白のデータ数(例えば、2を指定した場合は、2セル分の余白がQRの周りに設定される)
-//		デフォルトはQDR_DEFAULT_MARGIN
+//描画情報の初期化
 //	symbolsize
 //		dataの一辺のデータ長(実際にはQREncodeが返す値をそのまま設定する)
 //	data
@@ -246,23 +260,22 @@ unsigned int qdr_get_margin(Qdr *qdr);
 //QR画像の仕上がりピクセル数を返す
 #define qdr_size(msize, symbolsize, margin) (symbolsize+margin*2)*msize
 
-//===========================
-// 保存
-//===========================
+//----------------------------------
+// save
+//----------------------------------
 int qdr_save(Qdr *qdr, QDR_FORMAT format, const char *file);
 
 #define qdr_save_png(qdr, file) qdr_save(qdr, QDR_FORMAT_PNG, file)
 #define qdr_save_svg(qdr, file) qdr_save(qdr, QDR_FORMAT_SVG, file)
 #define qdr_save_pdf(qdr, file) qdr_save(qdr, QDR_FORMAT_PDF, file)
 
-//===========================
+//----------------------------------
 // 背景
-//===========================
+//----------------------------------
 //単色
 void qdr_bg_color(Qdr *qdr, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 
 //画像
-// 設定できるのはPNG形式のみ
 // alphaは貼り付け画像に適用するalpha値
 // 背景は隙間ができないようにフィットされる
 int qdr_bg_image(Qdr *qdr, const char *file, unsigned char alpha);
@@ -272,9 +285,9 @@ void qdr_bg_grad(Qdr *qdr, QDR_GRADIENT_TYPE type,
 	unsigned char r0, unsigned char g0, unsigned char b0, unsigned char a0,
 	unsigned char r1, unsigned char g1, unsigned char b1, unsigned char a1);
 
-//===========================
+//----------------------------------
 // グルーピング
-//===========================
+//----------------------------------
 // セルのグルーピングをする
 int qdr_group(Qdr *qdr);
 
@@ -298,15 +311,15 @@ void qdr_group_image(Qdr *qdr, const char *file, int is_mark);
 // 1セル領域の画像設定をクリアする
 #define qdr_group_image_clear(qdr) qdr_group_image(qdr, NULL)
 
-//===========================
+//----------------------------------
 // シンボルの形状
-//===========================
+//----------------------------------
 // ARC, BLOCK_ARCの時にはradiusの指定が可能(radiusのデフォルトはQDR_DEFAULT_RADIUS)
 void qdr_set_mark(Qdr *qdr, QDR_MARKTYPE type, double radius);
 
-//===========================
+//----------------------------------
 // マークの塗り
-//===========================
+//----------------------------------
 //単色
 void qdr_set_mark_color(Qdr *qdr, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 
@@ -353,9 +366,9 @@ void qdr_eye_image_reset(Qdr *qdr, int index);
 void qdr_set_mark_shadow(Qdr *qdr, int offsetx, int offsety, 
 		unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 
-//===========================
+//----------------------------------
 // 画像の貼り付け
-//===========================
+//----------------------------------
 //画像を貼り付ける
 // level(誤り訂正レベル)より
 //   - 大きい場合は縮小
@@ -371,16 +384,16 @@ int qdr_paste(Qdr *qdr, const char *file, int x, int y);
 
 #define qdr_paste_reset(qdr) qdr_paste(qdr, NULL, 0, 0)
 
-//===========================
+//----------------------------------
 // 穴あけ
-//===========================
+//----------------------------------
 //今のところセンターのみ
-// ※このメソッドを実行すると、シンボル情報が破壊されます。
+// ※このメソッドを実行すると、シンボル情報が破壊される
 int qdr_hole(Qdr *qdr, QDR_LEVEL level);
 
-//===========================
+//----------------------------------
 // 最大長方形領域
-//===========================
+//----------------------------------
 //最大長方形領域の情報
 int qdr_largest_width(Qdr *qdr);
 int qdr_largest_height(Qdr *qdr);
@@ -390,9 +403,9 @@ int qdr_largest_y(Qdr *qdr);
 //最大領域に画像を貼る
 //int qdr_largestrect_paste(Qdr *qdr, const char *file);
 
-//===========================
+//----------------------------------
 // 文字列の描画
-//===========================
+//----------------------------------
 //	operatorの検討
 //	SLANTとweightの検討
 //font: CSS2 generic family names, ("serif", "sans-serif", "cursive", "fantasy", "monospace")
@@ -401,11 +414,11 @@ int qdr_text(Qdr *qdr, const char *font, const char *utf8, unsigned int height,
 
 #define qdr_text_reset(qdr) (qdr, NULL, NULL, 1, 0, 0, 0, 0)
 
-//===========================
+//----------------------------------
 // フィルター(仕上がり全体への効果)
 //	このメソッド群は、draw後に実行しなければいけない。
 //	pngのみに有効（SVG、PDFを選択した場合はこのメソッドは無効）
-//===========================
+//----------------------------------
 int qdr_filter_invert(Qdr *qdr);
 int qdr_filter_crayon(Qdr *qdr, double factor, int bv1, int bv2, int alpha);
 int qdr_filter_noise(Qdr *qdr, int noise);

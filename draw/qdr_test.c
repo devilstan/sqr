@@ -14,7 +14,7 @@ int qdr_test(Qdr *qdr)
 				  a = 0xff;
 	cairo_t *cr;
 	
-	//‚Ğ‚Æ‚Ü‚¸draw
+	//ã²ã¨ã¾ãšdraw
 	qdr->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, qdr->rsize, qdr->rsize);
 	qdr_draw(qdr);
 	
@@ -31,7 +31,7 @@ int qdr_test(Qdr *qdr)
 	cairo_text_extents_t extents;
 	cairo_text_extents(cr, utf8, &extents);
 	
-	//ƒIƒyƒŒ[ƒ^‚Í—vŒŸ“¢
+	//ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã¯è¦æ¤œè¨
 	//  http://cairographics.org/operators/
 	cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
 	//cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);

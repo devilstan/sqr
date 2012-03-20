@@ -12,7 +12,7 @@
 #include "qdr.h"
 
 #ifdef DEBUG
-#include "../dbg.h"
+#include "../dbg/dbg.h"
 #endif
 
 #endif

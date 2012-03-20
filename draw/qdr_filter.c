@@ -10,8 +10,8 @@ static int c2p(cairo_surface_t *surface, PKLImage pk)
 	if(!pk)
 		return 1;
 	
-	//CAIRO_FORMAT_RGB24‚ÆCAIRO_FORMAT_ARGB32ˆÈŠO‚Í‘Î‰ž‚µ‚È‚¢
-	//’A‚µApiklƒ[ƒ‹ƒh‚ÍRGB‚È‚Ì‚ÅAcairoƒ[ƒ‹ƒh‚ÌA‚É‚Í•s‰ÂN
+	//CAIRO_FORMAT_RGB24ã¨CAIRO_FORMAT_ARGB32ä»¥å¤–ã¯å¯¾å¿œã—ãªã„
+	//ä½†ã—ã€piklãƒ¯ãƒ¼ãƒ«ãƒ‰ã¯RGBãªã®ã§ã€cairoãƒ¯ãƒ¼ãƒ«ãƒ‰ã®Aã«ã¯ä¸å¯ä¾µ
 	//typedef enum _cairo_format {
 	//    CAIRO_FORMAT_INVALID   = -1,
 	//    CAIRO_FORMAT_ARGB32    = 0,
@@ -51,7 +51,7 @@ static int p2c(PKLImage pk, cairo_surface_t *surface)
 	if(!surface)
 		return 1;
 	
-	//cairoƒ[ƒ‹ƒh‚à–ß‚³‚¸‚ÉApiklƒ[ƒ‹ƒh‚Å•Û‘¶‚Å‚«‚é
+	//cairoãƒ¯ãƒ¼ãƒ«ãƒ‰ã‚‚æˆ»ã•ãšã«ã€piklãƒ¯ãƒ¼ãƒ«ãƒ‰ã§ä¿å­˜ã§ãã‚‹
 	//pkl_save_file(&pk, PKL_FORMAT_PNG, "test_p.png");
 	
 	unsigned char *image = cairo_image_surface_get_data(surface);
@@ -83,7 +83,7 @@ static int create_surface(Qdr *qdr)
 		}
 	}
 	
-	//ƒT[ƒtƒBƒX‚ª‘¶Ý‚µ‚È‚¢ê‡‚ÍAImage‚Åì¬‚µ‚Ädraw
+	//ã‚µãƒ¼ãƒ•ã‚£ã‚¹ãŒå­˜åœ¨ã—ãªã„å ´åˆã¯ã€Imageã§ä½œæˆã—ã¦draw
 	qdr->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, qdr->rsize, qdr->rsize);
 	qdr_draw(qdr);
 	

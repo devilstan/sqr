@@ -2,6 +2,7 @@
 #define __QDR_EYE__
 
 #include "qdr_private.h"
+#include "qdr_import.h"
 
 void eye_mark_init(Qdr *qdr);
 int eye_check(Qdr *qdr, int x, int y);

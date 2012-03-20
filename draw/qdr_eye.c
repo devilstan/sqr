@@ -19,7 +19,7 @@ void eye_mark_init(Qdr *qdr)
 	
 	memset(qdr->eyes.data, 0xff, QDR_MAXMSIZE*QDR_MAXMSIZE);
 	
-	//ƒ}[ƒNŠO‘¤
+	//ãƒãƒ¼ã‚¯å¤–å´
 	i=0;
 	px[0]=0,            py[0]=0;
 	px[1]=qdr->ssize-7, py[1]=0;
@@ -34,7 +34,7 @@ void eye_mark_init(Qdr *qdr)
 		i++;
 	}while(i < 3);
 	
-	//ƒ}[ƒN“à‘¤
+	//ãƒãƒ¼ã‚¯å†…å´
 	i=0;
 	px[0]=2,            py[0]=2;
 	px[1]=qdr->ssize-5, py[1]=2;
@@ -48,7 +48,7 @@ void eye_mark_init(Qdr *qdr)
 		i++;
 	}while(i < 3);
 	
-	//ƒ}[ƒN“à‘¤‚ÌÅIƒZƒ‹
+	//ãƒãƒ¼ã‚¯å†…å´ã®æœ€çµ‚ã‚»ãƒ«
 	qdr->eyes.lastcell[0].x = 4;
 	qdr->eyes.lastcell[0].y = 4;
 	qdr->eyes.lastcell[1].x = qdr->ssize - 3;
@@ -63,11 +63,11 @@ void eye_mark_init(Qdr *qdr)
 int eye_check(Qdr *qdr, int x, int y)
 {
 	if(qdr->eyes.data[x][y] != 0xff){
-		//F‚ª—LŒø‚È
+		//è‰²ãŒæœ‰åŠ¹ãªæ™‚
 		if(qdr->eyes.eye[qdr->eyes.data[x][y]].enable)
 			return 1;
 		
-		//‰æ‘œ‚ª—LŒø‚È
+		//ç”»åƒãŒæœ‰åŠ¹ãªæ™‚
 		if(qdr->eyes.eye[qdr->eyes.data[x][y]].image)
 			return 1;
 	}
@@ -85,27 +85,32 @@ void eye_paint(Qdr *qdr, cairo_t *cr, int x, int y)
 	cairo_save(cr);
 	
 	if(e->enable){
-		//F‚ª—LŒø‚È
+		//è‰²ãŒæœ‰åŠ¹ãªæ™‚
 		cairo_set_source_rgba(cr, e->r, e->g, e->b, e->a);
 	}else{
-		//F‚ª–³Œø‚È ==> path‚ğE‚·‚½‚ß‚É“§–¾‚É‚µ‚Ä‚µ‚Ü‚¤B
+		//è‰²ãŒç„¡åŠ¹ãªæ™‚ ==> pathã‚’æ®ºã™ãŸã‚ã«é€æ˜ã«ã—ã¦ã—ã¾ã†ã€‚
 		cairo_set_source_rgba(cr, e->r, e->g, e->b, 0x00);
 	}
 	cairo_fill(cr);
 	
-	//‰æ‘œ‚ª—LŒø‚È
+	//ç”»åƒãŒæœ‰åŠ¹ãªæ™‚
 	if(e->image){
-		//ÅIƒZƒ‹‚Å‚ ‚é‚©H
+		//æœ€çµ‚ã‚»ãƒ«ã§ã‚ã‚‹ã‹ï¼Ÿ
 		int i;
 		for(i=0; i<3; i++){
 			if(qdr->eyes.lastcell[i].x==x && qdr->eyes.lastcell[i].y==y){
-				//‰æ‘œ—Lİ’è‚Å‚©‚Âinner—Ìˆæ‚ÌÅIƒZƒ‹‚È‚Ì‚Å‰æ‘œ‚ğ“\‚é
-				cairo_surface_t *surface = cairo_image_surface_create_from_png(e->image);
+				//ç”»åƒæœ‰è¨­å®šã§ã‹ã¤inneré ˜åŸŸã®æœ€çµ‚ã‚»ãƒ«ãªã®ã§ç”»åƒã‚’è²¼ã‚‹
+				//cairo_surface_t *surface = cairo_image_surface_create_from_png(e->image);
+				struct QDRBindImage b;
+				cairo_surface_t *surface = image_surface_create(&b, e->image);
+				if(!surface)
+					return;
+				
 				cairo_pattern_t *pattern = cairo_pattern_create_for_surface(surface);
 				
 				int w = cairo_image_surface_get_width(surface);
 				int h = cairo_image_surface_get_height(surface);
-				int t = qdr->msize * 3;	//ÀÛ‚É“\‚è•t‚¯‚é—Ìˆæ‚Ìˆê•Ó‚ÌƒTƒCƒY
+				int t = qdr->msize * 3;	//å®Ÿéš›ã«è²¼ã‚Šä»˜ã‘ã‚‹é ˜åŸŸã®ä¸€è¾ºã®ã‚µã‚¤ã‚º
 
 				//scaling
 				if(w>t || h>t){
@@ -127,6 +132,8 @@ void eye_paint(Qdr *qdr, cairo_t *cr, int x, int y)
 				
 				cairo_pattern_destroy(pattern);
 				cairo_surface_destroy(surface);
+				if(b.data)
+					free(b.data);
 				break;
 			}
 		}
