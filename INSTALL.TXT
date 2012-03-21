@@ -1,0 +1,28 @@
+#--------------------------
+#  C or CPP
+#--------------------------
+# build
+   make -f build/Makefile
+
+# test
+   ./a.out
+
+#--------------------------
+#  swig(perl)
+#--------------------------
+# 開発時のみ
+   swig -c++ -perl5 build/sqr.i
+   mv build/sqr_wrap.cxx build/perl/sqr_wrap.cxx
+   
+   mv build/SQR.pm .
+    or
+   rm build/SQR.pm
+
+# build
+   perl Makefile.PL
+   make
+   make install
+
+# test
+   perl sample.pl
+

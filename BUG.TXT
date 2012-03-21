@@ -1,0 +1,19 @@
+draw/qdr.h:122: Warning(451): Setting a const char * variable may leak memory.
+draw/qdr.h:137: Warning(451): Setting a const char * variable may leak memory.
+draw/qdr.h:214: Warning(451): Setting a const char * variable may leak memory.
+draw/qdr.h:215: Warning(451): Setting a const char * variable may leak memory.
+draw/qdr.h:201: Warning(451): Setting a const char * variable may leak memory.
+draw/qdr.h:178: Warning(451): Setting a const char * variable may leak memory.
+draw/qdr.h:170: Warning(451): Setting a const char * variable may leak memory.
+
+この問題により、
+
+perlでの
+eye_image はうまく動かないです。
+
+=========================================================================================
+
+cairoのビルドオプションによっては、
+読み込み画像にpng以外を指定した場合
+libpngのエラーが出る場合があります。
+が、処理可能なjpg、gifであればロードされます。
