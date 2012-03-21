@@ -81,7 +81,7 @@ int eye_check(Qdr *qdr, int x, int y)
 void eye_paint(Qdr *qdr, cairo_t *cr, int x, int y)
 {
 	struct QDREye *e = &qdr->eyes.eye[qdr->eyes.data[x][y]];
-	
+
 	cairo_save(cr);
 	
 	if(e->enable){

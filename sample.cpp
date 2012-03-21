@@ -729,8 +729,8 @@ int main(int argc, char **argv)
 	output_svg(&qr);
 	output_pdf(&qr);
 
-
 /////////////////////////////////////////////////////////////////
+#ifdef DEBUG
 {
 	CQR_Encode qr;
 	char *data = (char *)"qdr";
@@ -751,8 +751,9 @@ int main(int argc, char **argv)
 	
 	qdr_close(&qdr);
 }
-
+#endif
 /////////////////////////////////////////////////////////////////
+#ifdef DEBUG
 {
 	//test
 	CQR_Encode qr;
@@ -770,6 +771,7 @@ int main(int argc, char **argv)
 	
 	qdr_close(&qdr);
 }
+#endif
 /////////////////////////////////////////////////////////////////
 
 

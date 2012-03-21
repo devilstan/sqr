@@ -1,0 +1,14 @@
+■【フリーソフト】高機能でカラフルなQRコード(二次元バーコード)がデザインできる ColorfulQRCodeMaker高性能バーコード・ライブラリー DotNetBarcode公式ホームページ
+http://www.geocities.jp/japan_inf/DotNetBarcode/
+
+■cairo用の構造体とマスクとクリップ Xo式　実験室（labo.xo-ox.net）
+http://labo.xo-ox.net/article/117317042.html
+
+■Custom QR Code Design
+http://beqrious.com/show/custom-qr-code-design
+
+■フォント - CSS2リファレンス
+http://hp.vector.co.jp/authors/VA022006/css/fonts.html
+
+■複数ファイルを使った中規模 XS の開発Add Startomisimatokuhirom
+http://d.hatena.ne.jp/dayflower/20081222/1229925431

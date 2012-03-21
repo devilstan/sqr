@@ -309,7 +309,7 @@ void qdr_group_palette_rand(Qdr *qdr, unsigned char offset, unsigned char limit,
 void qdr_group_image(Qdr *qdr, const char *file, int is_mark);
 
 // 1セル領域の画像設定をクリアする
-#define qdr_group_image_clear(qdr) qdr_group_image(qdr, NULL)
+#define qdr_group_image_clear(qdr) qdr_group_image(qdr, NULL, 1)
 
 //----------------------------------
 // シンボルの形状
@@ -421,7 +421,6 @@ int qdr_text(Qdr *qdr, const char *font, const char *utf8, unsigned int height,
 //----------------------------------
 int qdr_filter_invert(Qdr *qdr);
 int qdr_filter_crayon(Qdr *qdr, double factor, int bv1, int bv2, int alpha);
-int qdr_filter_noise(Qdr *qdr, int noise);
 int qdr_filter_circle(Qdr *qdr, int radius);
 int qdr_filter_grid(Qdr *qdr, int ms, int color);
 int qdr_filter_voronoi(Qdr *qdr, int zone);
