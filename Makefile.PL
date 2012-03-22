@@ -3,7 +3,7 @@ WriteMakefile(
 	CC      => 'gcc',
 	LD      => 'g++',
 	NAME    => 'SQR',
-	DEFINE  => '',
+	DEFINE  => '-DQDR_SWIG_PERL',
 	INC     => '-I/usr/include/cairo -Ipikl -I.',
 	LIBS    => '-lcairo -ljpeg -lgif -lpng -L/lib/gcc/i686-pc-cygwin/4.5.3 -lstdc++',
 	OPTIMIZE => '-O3',

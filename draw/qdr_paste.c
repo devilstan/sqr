@@ -128,7 +128,15 @@ int qdr_paste_layout(Qdr *qdr, const char *file, QDR_LAYOUT layout, QDR_LEVEL le
 	//}
 	
 	qdr->paste.type = QDR_PASTETYPE_LAYOUT;
+
+#ifdef QDR_SWIG_PERL
+	if(qdr->paste.image)
+		free(qdr->paste.image);
+	qdr->paste.image = file ? strdup(file) : NULL;
+#else
 	qdr->paste.image = file;
+#endif
+
 	qdr->paste.layout = layout;
 	qdr->paste.level = level;
 	
@@ -144,7 +152,15 @@ int qdr_paste(Qdr *qdr, const char *file, int x, int y)
 		return 1;
 	
 	qdr->paste.type = QDR_PASTETYPE_POSITION;
-	qdr->paste.image  = file;
+
+#ifdef QDR_SWIG_PERL
+	if(qdr->paste.image)
+		free(qdr->paste.image);
+	qdr->paste.image = file ? strdup(file) : NULL;
+#else
+	qdr->paste.image = file;
+#endif
+	
 	qdr->paste.x = x;
 	qdr->paste.y = y;
 	

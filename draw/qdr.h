@@ -21,7 +21,7 @@ extern "C" {
 //=============================================================================
 #define QDR_VERSION_MAJOR 0
 #define QDR_VERSION_MINOR 0
-#define QDR_VERSION_MICRO 3
+#define QDR_VERSION_MICRO 4
 #define qdr_version() ( \
 	  (QDR_VERSION_MAJOR * 10000) \
 	+ (QDR_VERSION_MINOR *   100) \
@@ -119,7 +119,11 @@ struct QDRGroup {
 	struct QDRGroupAttr attr[256];	//取り急ぎ256個
 	
 	//1セル用画像設定
+#ifdef QDR_SWIG_PERL
+	char *image;
+#else
 	const char *image;
+#endif
 	int is_mark;
 };
 
@@ -134,7 +138,11 @@ struct QDRGrad {
 struct QDREye {
 	int enable;		//eyemarkの設定をしている時true
 	double r, g, b, a;
+#ifdef QDR_SWIG_PERL
+	char *image;
+#else
 	const char *image;
+#endif
 };
 
 //最大長方形情報
@@ -162,7 +170,11 @@ typedef struct _Qdr {
 	struct {
 		QDR_BACKGROUND_TYPE type;
 		double r, g, b, a;		//単色
+#ifdef QDR_SWIG_PERL
+		char *image;			//画像
+#else
 		const char *image;		//画像
+#endif
 		struct QDRGrad grad;	//グラデーション
 	} background;
 	
@@ -170,7 +182,11 @@ typedef struct _Qdr {
 	struct {
 		QDR_MARKPAINT_TYPE type;
 		double r, g, b, a;		//単色塗り
+#ifdef QDR_SWIG_PERL
+		char *image;			//画像
+#else
 		const char *image;		//画像
+#endif
 		struct QDRGrad grad;	//グラデーション
 	} markpaint;
 	
@@ -192,7 +208,11 @@ typedef struct _Qdr {
 	//paste
 	struct {
 		QDR_PASTETYPE type;
+#ifdef QDR_SWIG_PERL
+		char *image;			//画像
+#else
 		const char *image;		//画像
+#endif
 		QDR_LAYOUT layout;		//配置場所
 		QDR_LEVEL  level;		//誤り訂正レベル
 		int x, y;				//for user-setting
@@ -206,8 +226,13 @@ typedef struct _Qdr {
 	
 	//text
 	struct {
+#ifdef QDR_SWIG_PERL
+		char *font;
+		char *utf8;
+#else
 		const char *font;
 		const char *utf8;
+#endif
 		unsigned int height;
 		double r, g, b, a;
 	} text;

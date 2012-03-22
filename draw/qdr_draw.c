@@ -89,6 +89,33 @@ void qdr_close(Qdr *qdr)
 		cairo_surface_destroy(qdr->surface);
 		qdr->surface=NULL;
 	}
+	
+#ifdef QDR_SWIG_PERL
+	int i;
+	
+	if(qdr->group.image)
+		free(qdr->group.image);
+	
+	for(i=0; i<6; i++){
+		if(qdr->eyes.eye[i].image)
+			free(qdr->eyes.eye[i].image);
+	}
+	
+	if(qdr->background.image)
+		free(qdr->background.image);
+		
+	if(qdr->markpaint.image)
+		free(qdr->markpaint.image);
+
+	if(qdr->paste.image)
+		free(qdr->paste.image);
+		
+	if(qdr->text.font)
+		free(qdr->text.font);
+		
+	if(qdr->text.utf8)
+		free(qdr->text.utf8);
+#endif
 }
 
 //=================================================================================
@@ -117,7 +144,14 @@ int qdr_bg_image(Qdr *qdr, const char *file, unsigned char alpha)
 		return 1;
 	
 	qdr->background.type = QDR_BACKGROUND_IMAGE;
+
+#ifdef QDR_SWIG_PERL
+	if(qdr->background.image)
+		free(qdr->background.image);
+	qdr->background.image = file ? strdup(file) : NULL;
+#else
 	qdr->background.image = file;
+#endif
 	qdr->background.a = (double)alpha/255;
 	
 	return 0;
@@ -195,7 +229,15 @@ void qdr_set_mark_image(Qdr *qdr, const char *file, unsigned char alpha)
 		return;
 	
 	qdr->markpaint.type = QDR_MARKPAINT_IMAGE;
+	
+#ifdef QDR_SWIG_PERL
+	if(qdr->markpaint.image)
+		free(qdr->markpaint.image);
+	qdr->markpaint.image = file ? strdup(file) : NULL;
+#else
 	qdr->markpaint.image = file;
+#endif
+
 	qdr->markpaint.a = (double)alpha/255;
 }
 
@@ -245,10 +287,8 @@ static void background(Qdr *qdr, cairo_t *cr)
 		
 		//image = cairo_image_surface_create_from_png(qdr->background.image);
 		image = image_surface_create(&b, qdr->background.image);
-		if(!image){
-			fprintf(stderr, "%s(%d) image_surface_create faild.\n", __func__, __LINE__);
+		if(!image)
 			return;
-		}
 		
 		w = cairo_image_surface_get_width(image);
 		h = cairo_image_surface_get_height(image);

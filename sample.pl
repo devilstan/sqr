@@ -82,7 +82,6 @@ sub format_type {
     $p->save("format-3.svg", SQR::FORMAT::SVG);
 }
 
-## BUG!!(perl only)
 sub eye {
     my $p = shift;
 

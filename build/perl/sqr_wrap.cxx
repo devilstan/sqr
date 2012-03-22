@@ -1846,8 +1846,13 @@ SWIG_FromCharPtr(const char *cptr)
 
 
 typedef struct {
-		const char *font;
-		const char *utf8;
+
+		char *font;
+		char *utf8;
+
+
+
+
 		unsigned int height;
 		double r, g, b, a;
 	} Qdr_text;
@@ -1863,7 +1868,11 @@ typedef struct {
 
 typedef struct {
 		QDR_PASTETYPE type;
-		const char *image;		        
+
+		char *image;			        
+
+
+
 		QDR_LAYOUT layout;		              
 		QDR_LEVEL  level;		                       
 		int x, y;				                  
@@ -1891,7 +1900,11 @@ typedef struct {
 typedef struct {
 		QDR_MARKPAINT_TYPE type;
 		double r, g, b, a;		              
-		const char *image;		        
+
+		char *image;			        
+
+
+
 		struct QDRGrad grad;	                       
 	} Qdr_markpaint;
 
@@ -1900,7 +1913,11 @@ typedef struct {
 typedef struct {
 		QDR_BACKGROUND_TYPE type;
 		double r, g, b, a;		        
-		const char *image;		        
+
+		char *image;			        
+
+
+
 		struct QDRGrad grad;	                       
 	} Qdr_background;
 
@@ -4230,12 +4247,13 @@ XS(_wrap_QDRGroup_image_set) {
     arg1 = reinterpret_cast< QDRGroup * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QDRGroup_image_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QDRGroup_image_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->image) delete[] arg1->image;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->image = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->image = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->image = 0;
     }
@@ -5366,12 +5384,13 @@ XS(_wrap_QDREye_image_set) {
     arg1 = reinterpret_cast< QDREye * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QDREye_image_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "QDREye_image_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->image) delete[] arg1->image;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->image = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->image = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->image = 0;
     }
@@ -6692,12 +6711,13 @@ XS(_wrap_Qdr_text_font_set) {
     arg1 = reinterpret_cast< Qdr_text * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_text_font_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_text_font_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->font) delete[] arg1->font;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->font = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->font = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->font = 0;
     }
@@ -6763,12 +6783,13 @@ XS(_wrap_Qdr_text_utf8_set) {
     arg1 = reinterpret_cast< Qdr_text * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_text_utf8_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_text_utf8_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->utf8) delete[] arg1->utf8;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->utf8 = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->utf8 = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->utf8 = 0;
     }
@@ -7444,12 +7465,13 @@ XS(_wrap_Qdr_paste_image_set) {
     arg1 = reinterpret_cast< Qdr_paste * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_paste_image_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_paste_image_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->image) delete[] arg1->image;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->image = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->image = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->image = 0;
     }
@@ -8979,12 +9001,13 @@ XS(_wrap_Qdr_markpaint_image_set) {
     arg1 = reinterpret_cast< Qdr_markpaint * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_markpaint_image_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_markpaint_image_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->image) delete[] arg1->image;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->image = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->image = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->image = 0;
     }
@@ -9485,12 +9508,13 @@ XS(_wrap_Qdr_background_image_set) {
     arg1 = reinterpret_cast< Qdr_background * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_background_image_set" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Qdr_background_image_set" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
+    if (arg1->image) delete[] arg1->image;
     if (arg2) {
-      size_t size = strlen(reinterpret_cast< const char * >(reinterpret_cast< const char * >(arg2))) + 1;
-      arg1->image = (char const *)reinterpret_cast< char* >(memcpy((new char[size]), arg2, sizeof(char)*(size)));
+      size_t size = strlen(reinterpret_cast< const char * >(arg2)) + 1;
+      arg1->image = (char *)reinterpret_cast< char* >(memcpy((new char[size]), reinterpret_cast< const char * >(arg2), sizeof(char)*(size)));
     } else {
       arg1->image = 0;
     }

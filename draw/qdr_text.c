@@ -44,8 +44,19 @@ int qdr_text(Qdr *qdr, const char *font, const char *utf8, unsigned int height, 
 	if(height > (unsigned)qdr->msize*3 || height<=0)	//フォントがデカスギル!
 		return 1;
 	
+#ifdef QDR_SWIG_PERL
+	if(qdr->text.font)
+		free(qdr->text.font);
+	qdr->text.font = font ? strdup(font) : strdup("serif");
+	
+	if(qdr->text.utf8)
+		free(qdr->text.utf8);
+	qdr->text.utf8 = font ? strdup(utf8) : NULL;
+#else
 	qdr->text.font = font ? font : "serif";
 	qdr->text.utf8 = utf8;
+#endif
+	
 	qdr->text.height = height;
 	qdr->text.r = (double)r/255;
 	qdr->text.g = (double)g/255;

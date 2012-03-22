@@ -72,8 +72,15 @@ void qdr_group_image(Qdr *qdr, const char *file, int is_mark)
 {
 	if(!qdr)
 		return;
-		
+	
+#ifdef QDR_SWIG_PERL
+	if(qdr->group.image)
+		free(qdr->group.image);
+	qdr->group.image = file ? strdup(file) : NULL;
+#else
 	qdr->group.image = file;
+#endif
+	
 	qdr->group.is_mark = !file ? 0 : is_mark;
 }
 

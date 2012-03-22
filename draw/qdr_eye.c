@@ -197,7 +197,14 @@ void qdr_eye_image(Qdr *qdr, int index, const char *file)
 		return;
 	if(!file)
 		return;
+		
+#ifdef QDR_SWIG_PERL
+	if(qdr->eyes.eye[index+3].image)
+		free(qdr->eyes.eye[index+3].image);
+	qdr->eyes.eye[index+3].image = file ? strdup(file) : NULL;
+#else
 	qdr->eyes.eye[index+3].image = file;
+#endif
 }
 
 //=================================================================================

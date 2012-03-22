@@ -738,6 +738,23 @@ int main(int argc, char **argv)
 
 	Qdr qdr;
 	qdr_init(&qdr, qr.m_nSymbleSize, qr.m_byModuleData);
+	
+	//不正画像
+	qdr_bg_image(&qdr, "images/dummy", 80);
+	
+	qdr_save_png(&qdr, "out/bad.png");
+	qdr_close(&qdr);
+}
+#endif
+/////////////////////////////////////////////////////////////////
+#ifdef DEBUG
+{
+	CQR_Encode qr;
+	char *data = (char *)"qdr";
+	qr.EncodeData(1, 0, true, -1, data, strlen(data));
+
+	Qdr qdr;
+	qdr_init(&qdr, qr.m_nSymbleSize, qr.m_byModuleData);
 	qdr_group(&qdr);
 	qdr_group_palette_rand(&qdr, 0, 200, 0xff);
 

@@ -164,50 +164,50 @@ static void bind_gif(struct QDRBindImage *b, const char *file)
 cairo_surface_t *image_surface_create(struct QDRBindImage *b, const char *file)
 {
 	cairo_surface_t *image=NULL;
-	
+	int i;
+	unsigned char d[8];
+	struct {
+		void (*binder)(struct QDRBindImage *b, const char *file);
+		int size;
+		unsigned char magic[8];
+	} format[] = {
+		{bind_jpg, 2, {0xFF, 0xD8}},
+		{bind_gif, 6, {0x47, 0x49, 0x46, 0x38, 0x37, 0x61}},
+		{bind_gif, 6, {0x47, 0x49, 0x46, 0x38, 0x39, 0x61}},
+		{NULL,     8, {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}},
+	};
+
 	if(!file)
 		goto LAST;
-	
 	if(!b)
 		goto LAST;
+	
 	memset(b, 0, sizeof(struct QDRBindImage));
 
-	image = cairo_image_surface_create_from_png(file);
-	if(cairo_surface_status(image) == CAIRO_STATUS_SUCCESS)
+	FILE *fp = fopen(file, "r");
+	if(!fp)
 		goto LAST;
-
-	{
-		int i;
-		unsigned char d[8];
-		struct {
-			void (*binder)(struct QDRBindImage *b, const char *file);
-			int size;
-			unsigned char magic[8];
-		} format[] = {
-			{bind_jpg, 2, {0xFF, 0xD8}},
-			{bind_gif, 6, {0x47, 0x49, 0x46, 0x38, 0x37, 0x61}},
-			{bind_gif, 6, {0x47, 0x49, 0x46, 0x38, 0x39, 0x61}},
-			//{NULL,     8, {0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}},
-		};
-
-		FILE *fp = fopen(file, "r");
-		if(!fp)
-			goto LAST;
-		
-		fread(d, 1, 8, fp);
-		fclose(fp);
-		
-		for(i=0; i<sizeof(format)/sizeof(format[0]); i++){
-			if(!memcmp(d, format[i].magic, format[i].size)){
+	
+	fread(d, 1, 8, fp);
+	fclose(fp);
+	
+	for(i=0; i<sizeof(format)/sizeof(format[0]); i++){
+		if(!memcmp(d, format[i].magic, format[i].size)){
+			if(format[i].binder)
 				format[i].binder(b, file);
-				break;
-			}
+			else
+				image = cairo_image_surface_create_from_png(file);
+			
+			break;
 		}
 	}
 	
-	if(b->data)
+	if(b->data && !image)
 		image = cairo_image_surface_create_for_data(b->data, CAIRO_FORMAT_ARGB32, b->width, b->height, b->width*4);
 
 LAST:
+	if(!image || cairo_surface_status(image)!=CAIRO_STATUS_SUCCESS)
+		fprintf(stderr, "%s(%d) bat image!\n", __func__, __LINE__);
+	
 	return image;
 }

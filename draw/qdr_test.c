@@ -33,8 +33,10 @@ int qdr_test(Qdr *qdr)
 	
 	//オペレータは要検討
 	//  http://cairographics.org/operators/
-	cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
-	//cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);
+	#if CAIRO_VERSION >= 11000
+		cairo_set_operator(cr, CAIRO_OPERATOR_HARD_LIGHT);
+		//cairo_set_operator(cr, CAIRO_OPERATOR_DARKEN);
+	#endif
 	
 	int x = (qdr->rsize - extents.width) / 2;
 	int y = (qdr->rsize + height) / 2;

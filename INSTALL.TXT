@@ -11,7 +11,7 @@
 #  swig(perl)
 #--------------------------
 # 開発時のみ
-   swig -c++ -perl5 build/sqr.i
+   swig -DQDR_SWIG_PERL -c++ -perl5 build/sqr.i
    mv build/sqr_wrap.cxx build/perl/sqr_wrap.cxx
    
    mv build/SQR.pm .
