@@ -32,6 +32,8 @@ static int c2p(cairo_surface_t *surface, PKLImage pk)
 	pk->color = PKL_RGB;
 	pk->image = (unsigned char *)malloc(pk->width * pk->height * pk->channel);
 	
+	//実際には BGRA(cairo) RGB(pikl) だが、RGBを意識したフィルターは使わないので
+	//先行3バイトをそのままの並びで使う
 	int i, j;
 	for(i=0; i<pk->height; i++){
 		for(j=0; j<pk->width; j++)
