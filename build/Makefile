@@ -1,9 +1,10 @@
 CPP=g++
 CC=gcc
-DEBUG = -DDEBUG
+DEBUG =-DDEBUG -fstack-usage
 
 CFLAGS=-O3 -Wall -c
-LFLAGS=
+LFLAGS=-Wl,--stack,10000000
+#LFLAGS=
 
 PIKL_CFLAGS = -I. -Ipikl
 PIKL_LFLAGS = -ljpeg -lpng -lgif
@@ -173,5 +174,5 @@ dbg_malloc_sub.o:
 # clean
 #=============================================================================
 clean:
-	rm -rf *.o *.exe
+	rm -rf *.o *.exe *.su
 
