@@ -740,6 +740,7 @@ int main(int argc, char **argv)
 	qdr_init(&qdr, qr.m_nSymbleSize, qr.m_byModuleData);
 	
 	//不正画像
+	// ワーニングが出る
 	qdr_bg_image(&qdr, "images/dummy", 80);
 	
 	qdr_save_png(&qdr, "out/bad.png");
