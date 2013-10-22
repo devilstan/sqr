@@ -6,6 +6,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include <png.h>
+#include <zlib.h>
 
 #include "pikl.h"
 #include "pikl_private.h"
